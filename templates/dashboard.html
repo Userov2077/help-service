@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}Главная{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+    <div class="row">
+        <div class="col-12 mb-4">
+            <div class="glass p-4 text-center">
+                <h1 class="text-white">Добро пожаловать, {{ user.name }}!</h1>
+                <p class="text-white-50">Ваш рейтинг: 
+                    {% for i in range(user.rating|int) %}⭐{% endfor %}
+                    ({{ user.rating }})
+                </p>
+                {% if user.role == 'executor' %}
+                    <p class="text-white">✅ Выполнено заказов: {{ user.completed_tasks }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {% if user.role == 'customer' %}
+        <div class="row mb-4">
+            <div class="col-12">
+                <a href="/task/create" class="btn btn-apple">
+                    <i class="fas fa-plus"></i> Создать новую заявку
+                </a>
+            </div>
+        </div>
+        
+        <h3 class="text-white mb-3">📋 Мои заявки</h3>
+        <div class="row">
+            {% for task in my_tasks %}
+                <div class="col-md-6 mb-3">
+                    <div class="glass-card p-3">
+                        <h5 class="text-white">{{ task.title }}</h5>
+                        <p class="text-white-50">{{ task.description[:100] }}...</p>
+                        <p class="text-white">💰 {{ task.price }} ₸ | 📍 {{ task.address }}</p>
+                        <span class="badge bg-{% if task.status == 'open' %}success{% elif task.status == 'in_progress' %}warning{% else %}secondary{% endif %} mb-2">
+                            {{ task.status }}
+                        </span>
+                        <a href="/task/{{ task.id }}" class="btn btn-sm btn-outline-apple">Подробнее</a>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-12">
+                    <div class="glass p-4 text-center">
+                        <p class="text-white">У вас пока нет заявок</p>
+                        <a href="/task/create" class="btn btn-apple">Создать первую</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <h3 class="text-white mb-3">🔍 Доступные заявки</h3>
+        <div class="row">
+            {% for task in open_tasks %}
+                <div class="col-md-6 mb-3">
+                    <div class="glass-card p-3">
+                        <h5 class="text-white">{{ task.title }}</h5>
+                        <p class="text-white-50">{{ task.description[:100] }}...</p>
+                        <p class="text-white">💰 {{ task.price }} ₸ | 📍 {{ task.address }}</p>
+                        <a href="/task/{{ task.id }}" class="btn btn-sm btn-apple">Откликнуться</a>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-12">
+                    <div class="glass p-4 text-center">
+                        <p class="text-white">Пока нет доступных заявок</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <h3 class="text-white mb-3 mt-4">✅ Мои выполненные заказы</h3>
+        <div class="row">
+            {% for task in completed_tasks %}
+                <div class="col-md-6 mb-3">
+                    <div class="glass-card p-3">
+                        <h5 class="text-white">{{ task.title }}</h5>
+                        <p class="text-white-50">{{ task.description[:100] }}...</p>
+                        <p class="text-white">💰 {{ task.price }} ₸</p>
+                        <span class="badge bg-secondary">Завершён</span>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-12">
+                    <div class="glass p-4 text-center">
+                        <p class="text-white">Пока нет выполненных заказов</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

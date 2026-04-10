@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="glass-card p-0 fade-in" style="overflow: hidden;">
+            <div class="p-3" style="background: rgba(255,255,255,0.1);">
+                <h5 class="text-white">💬 Чат с {{ other_user.name }}</h5>
+                <small class="text-white-50">Заявка: {{ task.title }}</small>
+            </div>
+            <div class="p-3" style="height: 400px; overflow-y: scroll;">
+                {% for msg in messages %}
+                    <div class="mb-2 {% if msg.from_user_id == session.user_id %}text-end{% endif %}">
+                        <div class="d-inline-block p-2 rounded" style="max-width: 70%; background: {% if msg.from_user_id == session.user_id %}rgba(102,126,234,0.8){% else %}rgba(255,255,255,0.2){% endif %}; border-radius: 18px;">
+                            <strong class="text-white">{{ User.query.get(msg.from_user_id).name }}:</strong>
+                            <span class="text-white">{{ msg.text }}</span>
+                            <br><small class="text-white-50">{{ msg.created_at.strftime('%H:%M') }}</small>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="p-3" style="background: rgba(255,255,255,0.05);">
+                <form method="POST">
+                    <div class="input-group">
+                        <input type="text" name="message" class="form-control" placeholder="Ваше сообщение..." required style="background: rgba(255,255,255,0.1); color: white; border: none;">
+                        <button type="submit" class="btn btn-apple">Отправить</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

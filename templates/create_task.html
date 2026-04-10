@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-7">
+        <div class="glass-card p-5 fade-in">
+            <h2 class="text-white text-center mb-4">📝 Создать заявку</h2>
+            <form method="POST">
+                <div class="mb-3">
+                    <label class="text-white">Что нужно сделать?</label>
+                    <input type="text" name="title" class="form-control" required style="background: rgba(255,255,255,0.1); color: white;">
+                </div>
+                <div class="mb-3">
+                    <label class="text-white">Описание</label>
+                    <textarea name="description" class="form-control" rows="3" required style="background: rgba(255,255,255,0.1); color: white;"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label class="text-white">Цена (тенге)</label>
+                    <input type="number" name="price" class="form-control" required style="background: rgba(255,255,255,0.1); color: white;">
+                </div>
+                <div class="mb-3">
+                    <label class="text-white">Адрес или район</label>
+                    <input type="text" name="address" class="form-control" required style="background: rgba(255,255,255,0.1); color: white;">
+                </div>
+                <button type="submit" class="btn btn-apple w-100">Опубликовать</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

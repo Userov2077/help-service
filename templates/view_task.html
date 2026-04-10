@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+
+{% block title %}Просмотр заявки{% endblock %}
+
+{% block extra_css %}
+<style>
+    .modal-glass {
+        background: rgba(0,0,0,0.8);
+        backdrop-filter: blur(10px);
+    }
+    .captcha-modal .modal-content {
+        background: rgba(30,30,40,0.95);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 30px;
+        color: white;
+    }
+    .digit-captcha {
+        font-size: 2rem;
+        letter-spacing: 10px;
+        background: rgba(255,255,255,0.1);
+        display: inline-block;
+        padding: 10px 20px;
+        border-radius: 15px;
+        font-family: monospace;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="glass-card p-4">
+                <h2 class="text-white">{{ task.title }}</h2>
+                <p class="text-white-50">{{ task.description }}</p>
+                <p class="text-white">💰 <strong>{{ task.price }} тенге</strong></p>
+                <p class="text-white">📍 {{ task.address }}</p>
+                <p class="text-white-50">📅 Создана: {{ task.created_at.strftime('%d.%m.%Y %H:%M') }}</p>
+                
+                {% if task.status == 'open' %}
+                    <span class="badge bg-success fs-6">🟢 Ищет исполнителя</span>
+                {% elif task.status == 'in_progress' %}
+                    <span class="badge bg-warning fs-6">🟡 В работе</span>
+                {% else %}
+                    <span class="badge bg-secondary fs-6">⚪ Завершена</span>
+                {% endif %}
+            </div>
+
+            {% if user.id == task.customer_id and task.executor_id %}
+                <div class="glass-card p-4 mt-3">
+                    <h5 class="text-white">Исполнитель: {{ User.query.get(task.executor_id).name }}</h5>
+                    <a href="/task/{{ task.id }}/chat" class="btn btn-apple">
+                        <i class="fas fa-comment"></i> Написать сообщение
+                    </a>
+                    {% if task.status == 'in_progress' %}
+                        <a href="/task/{{ task.id }}/complete" class="btn btn-outline-apple" onclick="return confirm('Подтвердить выполнение?')">
+                            <i class="fas fa-check"></i> Подтвердить выполнение
+                        </a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="col-md-4">
+            <div class="glass-card p-4">
+                <h5 class="text-white">📢 Отклики ({{ executors_info|length }})</h5>
+                {% for item in executors_info %}
+                    <div class="mb-3 p-2" style="background: rgba(255,255,255,0.1); border-radius: 12px;">
+                        <strong class="text-white">{{ item.executor.name }}</strong>
+                        <div class="stars">
+                            {% for i in range(item.executor.rating|int) %}⭐{% endfor %}
+                        </div>
+                        <p class="text-white-50 small">{{ item.response.message[:100] }}</p>
+                        {% if user.id == task.customer_id and task.status == 'open' and item.response.status == 'pending' %}
+                            <a href="/response/{{ item.response.id }}/accept" class="btn btn-sm btn-apple">Выбрать</a>
+                        {% endif %}
+                        {% if item.response.status == 'accepted' %}
+                            <span class="badge bg-success">✅ Выбран</span>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    {% if user.role == 'executor' and task.status == 'open' %}
+        <div class="row mt-3">
+            <div class="col-12">
+                <div class="glass-card p-4">
+                    <h5 class="text-white">💬 Откликнуться на заявку</h5>
+                    <form id="respondForm">
+                        <textarea id="responseMessage" class="form-control mb-2" rows="2" placeholder="Расскажите, почему вы можете помочь..." style="background: rgba(255,255,255,0.1); color: white;"></textarea>
+                        <button type="button" class="btn btn-apple" data-bs-toggle="modal" data-bs-target="#captchaModal">
+                            Отправить отклик
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<!-- Модальное окно капчи -->
+<div class="modal fade captcha-modal" id="captchaModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h5 class="modal-title">🤖 Подтверждение</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <p>Пожалуйста, введите код с картинки</p>
+                <div class="digit-captcha mb-3" id="captchaCode">123456</div>
+                <input type="text" id="captchaInput" class="form-control text-center" placeholder="Введите код" style="background: rgba(255,255,255,0.1); color: white; width: 200px; margin: 0 auto;">
+                <div class="mt-3">
+                    <button class="btn btn-secondary" onclick="refreshCaptcha()">🔄 Обновить</button>
+                    <button class="btn btn-apple" onclick="verifyCaptcha()">✅ Подтвердить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+let currentCaptchaCode = '';
+
+function refreshCaptcha() {
+    fetch('/captcha/generate')
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                // Генерируем случайный код для отображения
+                currentCaptchaCode = Math.floor(100000 + Math.random() * 900000).toString();
+                document.getElementById('captchaCode').innerText = currentCaptchaCode;
+            }
+        });
+}
+
+function verifyCaptcha() {
+    const userCode = document.getElementById('captchaInput').value;
+    if (userCode === currentCaptchaCode) {
+        // Капча пройдена, отправляем форму
+        const message = document.getElementById('responseMessage').value;
+        fetch('/task/{{ task.id }}/respond', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'message=' + encodeURIComponent(message)
+        }).then(() => {
+            window.location.reload();
+        });
+    } else {
+        alert('Неверный код! Попробуйте ещё раз.');
+        refreshCaptcha();
+        document.getElementById('captchaInput').value = '';
+    }
+}
+
+// При открытии модального окна генерируем новую капчу
+document.getElementById('captchaModal').addEventListener('show.bs.modal', function () {
+    refreshCaptcha();
+});
+</script>
+{% endblock %}
+{% endblock %}

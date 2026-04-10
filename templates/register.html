@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="glass-card p-5 fade-in">
+            <h2 class="text-white text-center mb-4">Регистрация</h2>
+            <form method="POST">
+                <div class="mb-3">
+                    <label class="text-white">ИИН (12 цифр)</label>
+                    <input type="text" name="iin" class="form-control" required pattern="[0-9]{12}" style="background: rgba(255,255,255,0.1); color: white;">
+                </div>
+                <div class="mb-3">
+                    <label class="text-white">Телефон</label>
+                    <input type="tel" name="phone" class="form-control" required style="background: rgba(255,255,255,0.1); color: white;">
+                </div>
+                <div class="mb-3">
+                    <label class="text-white">Имя</label>
+                    <input type="text" name="name" class="form-control" required style="background: rgba(255,255,255,0.1); color: white;">
+                </div>
+                <div class="mb-3">
+                    <label class="text-white">Я хочу</label>
+                    <select name="role" class="form-control" style="background: rgba(255,255,255,0.1); color: white;">
+                        <option value="customer">Заказывать помощь</option>
+                        <option value="executor">Предлагать помощь</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="text-white">Пароль</label>
+                    <input type="password" name="password" class="form-control" required style="background: rgba(255,255,255,0.1); color: white;">
+                </div>
+                <button type="submit" class="btn btn-apple w-100">Зарегистрироваться</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

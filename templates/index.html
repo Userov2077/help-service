@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Помощь Рядом — находите помощь рядом</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            padding-bottom: 40px;
+        }
+
+        /* Эффект стекла */
+        .glass {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Навбар */
+        .navbar-glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .navbar-brand {
+            font-weight: 600;
+            font-size: 1.5rem;
+            background: linear-gradient(135deg, #fff, #a8c0ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .nav-link {
+            color: white !important;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .nav-link:hover {
+            opacity: 0.8;
+            transform: scale(1.05);
+        }
+
+        /* Кнопки */
+        .btn-apple {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 30px;
+            padding: 12px 28px;
+            font-weight: 600;
+            color: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-apple:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            color: white;
+        }
+
+        .btn-outline-apple {
+            background: transparent;
+            border: 2px solid white;
+            border-radius: 30px;
+            padding: 10px 24px;
+            font-weight: 600;
+            color: white;
+            transition: all 0.3s;
+        }
+
+        .btn-outline-apple:hover {
+            background: white;
+            color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        /* Формы */
+        .form-glass {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            border-radius: 16px;
+            padding: 12px 16px;
+        }
+
+        .form-glass:focus {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: white;
+            color: white;
+            box-shadow: none;
+        }
+
+        .form-glass::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Рейтинг звёздами */
+        .stars {
+            color: #ffc107;
+            font-size: 0.9rem;
+        }
+
+        /* Аватар */
+        .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        /* Анимации */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        /* Скролл */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+        }
+
+        /* Модальное окно капчи */
+        .captcha-modal .modal-content {
+            background: rgba(30, 30, 40, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 30px;
+            color: white;
+        }
+
+        .digit-captcha {
+            font-size: 2rem;
+            letter-spacing: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 15px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+
+<!-- НАВБАР -->
+<nav class="navbar navbar-expand-lg navbar-glass fixed-top">
+    <div class="container">
+        <a class="navbar-brand" href="#" onclick="showPage('home')">
+            <i class="fas fa-hands-helping"></i> Помощь Рядом
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto align-items-center" id="navButtons">
+                <!-- JS заполнит навигацию -->
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- ОСНОВНОЙ КОНТЕЙНЕР -->
+<div class="container mt-5 pt-5" id="mainContainer">
+    <!-- Сюда будет подгружаться контент -->
+</div>
+
+<script>
+    // ========== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ==========
+    let currentUser = null;
+    let currentCaptchaCode = '';
+    let pendingResponseTaskId = null;
+
+    // ========== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ==========
+    async function api(method, url, data = null) {
+        const options = {
+            method: method,
+            headers: { 'Content-Type': 'application/json' }
+        };
+        if (data) options.body = JSON.stringify(data);
+        const response = await fetch(url, options);
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.error || 'Ошибка');
+        }
+        return response.json();
+    }
+
+    function showToast(message, isError = false) {
+        // Простой alert пока что
+        alert(message);
+    }
+
+    function updateNav() {
+        const nav = document.getElementById('navButtons');
+        if (currentUser) {
+            nav.innerHTML = `
+                <li class="nav-item"><a class="nav-link" href="#" onclick="showPage('dashboard')"><i class="fas fa-home"></i> Главная</a></li>
+                <li class="nav-item"><a class="nav-link" href="#" onclick="showPage('profile')"><i class="fas fa-user-circle"></i> Кабинет</a></li>
+                <li class="nav-item"><a class="nav-link" href="#" onclick="showPage('createTask')"><i class="fas fa-plus-circle"></i> Создать заявку</a></li>
+                <li class="nav-item"><span class="nav-link"><div class="avatar d-inline-flex me-2" style="width: 35px; height: 35px; font-size: 0.9rem;">${currentUser.name[0].toUpperCase()}</div>${currentUser.name}</span></li>
+                <li class="nav-item"><a class="nav-link" href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i></a></li>
+            `;
+        } else {
+            nav.innerHTML = `
+                <li class="nav-item"><a class="nav-link" href="#" onclick="showPage('login')">Вход</a></li>
+                <li class="nav-item"><a class="btn btn-outline-apple ms-2" href="#" onclick="showPage('register')">Регистрация</a></li>
+            `;
+        }
+    }
+
+    async function loadUser() {
+        try {
+            currentUser = await api('GET', '/api/me');
+            updateNav();
+            showPage('dashboard');
+        } catch (e) {
+            currentUser = null;
+            updateNav();
+            showPage('home');
+        }
+    }
+
+    async function logout() {
+        await api('POST', '/api/logout');
+        currentUser = null;
+        updateNav();
+        showPage('home');
+    }
+
+    // ========== СТРАНИЦЫ ==========
+    function showPage(page) {
+        if (page === 'home') renderHome();
+        else if (page === 'login') renderLogin();
+        else if (page === 'register') renderRegister();
+        else if (page === 'dashboard') renderDashboard();
+        else if (page === 'profile') renderProfile();
+        else if (page === 'createTask') renderCreateTask();
+        else if (page === 'taskDetail') renderTaskDetail(window.currentTaskId);
+    }
+
+    function renderHome() {
+        document.getElementById('mainContainer').innerHTML = `
+            <div class="fade-in text-center" style="min-height: 70vh; display: flex; align-items: center;">
+                <div class="row w-100">
+                    <div class="col-12">
+                        <div class="glass p-5">
+                            <h1 class="display-3 text-white mb-3">🤝 Помощь Рядом</h1>
+                            <p class="lead text-white-50 mb-4">Находите помощь или помогайте другим в вашем районе</p>
+                            <div class="row mt-5">
+                                <div class="col-md-6 mb-3">
+                                    <div class="glass-card p-4">
+                                        <i class="fas fa-hand-sparkles fa-3x text-white mb-3"></i>
+                                        <h3 class="text-white">Нужна помощь?</h3>
+                                        <p class="text-white-50">Создайте заявку и найдите исполнителя</p>
+                                        <button class="btn btn-apple mt-2" onclick="showPage('register')">Зарегистрироваться</button>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="glass-card p-4">
+                                        <i class="fas fa-heart fa-3x text-white mb-3"></i>
+                                        <h3 class="text-white">Можете помочь?</h3>
+                                        <p class="text-white-50">Откликайтесь на заявки и зарабатывайте</p>
+                                        <button class="btn btn-outline-apple mt-2" onclick="showPage('register')">Стать исполнителем</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    function renderLogin() {
+        document.getElementById('mainContainer').innerHTML = `
+            <div class="row justify-content-center">
+                <div class="col-md-5">
+                    <div class="glass-card p-5 fade-in">
+                        <h2 class="text-white text-center mb-4">Вход</h2>
+                        <form id="loginForm">
+                            <div class="mb-3">
+                                <label class="text-white">ИИН</label>
+                                <input type="text" id="loginIin" class="form-control form-glass" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="text-white">Пароль</label>
+                                <input type="password" id="loginPassword" class="form-control form-glass" required>
+                            </div>
+                            <button type="submit" class="btn btn-apple w-100">Войти</button>
+                        </form>
+                        <p class="text-center text-white-50 mt-3">Нет аккаунта? <a href="#" onclick="showPage('register')" class="text-white">Регистрация</a></p>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            try {
+                await api('POST', '/api/login', {
+                    iin: document.getElementById('loginIin').value,
+                    password: document.getElementById('loginPassword').value
+                });
+                await loadUser();
+            } catch (err) {
+                alert(err.message);
+            }
+        });
+    }
+
+    function renderRegister() {
+        document.getElementById('mainContainer').innerHTML = `
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="glass-card p-5 fade-in">
+                        <h2 class="text-white text-center mb-4">Регистрация</h2>
+                        <form id="registerForm">
+                            <div class="mb-3">
+                                <label class="text-white">ИИН (12 цифр)</label>
+                                <input type="text" id="regIin" class="form-control form-glass" required pattern="[0-9]{12}">
+                            </div>
+                            <div class="mb-3">
+                                <label class="text-white">Телефон</label>
+                                <input type="tel" id="regPhone" class="form-control form-glass" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="text-white">Имя</label>
+                                <input type="text" id="regName" class="form-control form-glass" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="text-white">Я хочу</label>
+                                <select id="regRole" class="form-control form-glass">
+                                    <option value="customer">Заказывать помощь</option>
+                                    <option value="executor">Предлагать помощь</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="text-white">Пароль</label>
+                                <input type="password" id="regPassword" class="form-control form-glass" required>
+                            </div>
+                            <button type="submit" class="btn btn-apple w-100">Зарегистрироваться</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            try {
+                await api('POST', '/api/register', {
+                    iin: document.getElementById('regIin').value,
+                    phone: document.getElementById('regPhone').value,
+                    name: document.getElementById('regName').value,
+                    role: document.getElementById('regRole').value,
+                    password: document.getElementById('regPassword').value
+                });
+                alert('Регистрация успешна! Теперь войдите.');
+                showPage('login');
+            } catch (err) {
+                alert(err.message);
+            }
+        });
+    }
+
+    async function renderDashboard() {
+        const data = await api('GET', '/api/tasks');
+        const role = data.role;
+        let html = `<div class="fade-in"><div class="row"><div class="col-12 mb-4"><div class="glass p-4 text-center"><h1 class="text-white">Добро пожаловать, ${currentUser.name}!</h1><p class="text-white-50">⭐ Рейтинг: ${currentUser.rating} | ✅ Выполнено: ${currentUser.completed_tasks}</p></div></div></div>`;
+        
+        if (role === 'customer') {
+            html += `<h3 class="text-white mb-3">📋 Мои заявки</h3><div class="row">`;
+            for (let task of data.my_tasks) {
+                html += `
+                    <div class="col-md-6 mb-3">
+                        <div class="glass-card p-3">
+                            <h5 class="text-white">${task.title}</h5>
+                            <p class="text-white-50">${task.description.substring(0, 100)}...</p>
+                            <p class="text-white">💰 ${task.price} ₸ | 📍 ${task.address}</p>
+                            <span class="badge bg-${task.status === 'open' ? 'success' : (task.status === 'in_progress' ? 'warning' : 'secondary')} mb-2">${task.status}</span>
+                            <button class="btn btn-sm btn-outline-apple" onclick="viewTask(${task.id})">Подробнее</button>
+                        </div>
+                    </div>
+                `;
+            }
+            if (data.my_tasks.length === 0) html += `<div class="col-12"><div class="glass p-4 text-center"><p class="text-white">У вас пока нет заявок</p><button class="btn btn-apple" onclick="showPage('createTask')">Создать первую</button></div></div>`;
+            html += `</div>`;
+        } else {
+            html += `<h3 class="text-white mb-3">🔍 Доступные заявки</h3><div class="row">`;
+            for (let task of data.open_tasks) {
+                html += `
+                    <div class="col-md-6 mb-3">
+                        <div class="glass-card p-3">
+                            <h5 class="text-white">${task.title}</h5>
+                            <p class="text-white-50">${task.description.substring(0, 100)}...</p>
+                            <p class="text-white">💰 ${task.price} ₸ | 📍 ${task.address}</p>
+                            <button class="btn btn-sm btn-apple" onclick="viewTask(${task.id})">Откликнуться</button>
+                        </div>
+                    </div>
+                `;
+            }
+            if (data.open_tasks.length === 0) html += `<div class="col-12"><div class="glass p-4 text-center"><p class="text-white">Пока нет доступных заявок</p></div></div>`;
+            html += `</div>`;
+            
+            html += `<h3 class="text-white mb-3 mt-4">✅ Мои выполненные заказы</h3><div class="row">`;
+            for (let task of data.my_tasks) {
+                if (task.status === 'completed') {
+                    html += `<div class="col-md-6 mb-3"><div class="glass-card p-3"><h5 class="text-white">${task.title}</h5><p class="text-white">💰 ${task.price} ₸</p><span class="badge bg-secondary">Завершён</span></div></div>`;
+                }
+            }
+            html += `</div>`;
+        }
+        html += `</div>`;
+        document.getElementById('mainContainer').innerHTML = html;
+    }
+
+    async function renderProfile() {
+        const html = `
+            <div class="fade-in">
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <div class="glass-card p-4 text-center">
+                            <div class="avatar mx-auto mb-3" style="width: 100px; height: 100px; font-size: 2.5rem;">${currentUser.name[0].toUpperCase()}</div>
+                            <h3 class="text-white">${currentUser.name}</h3>
+                            <p class="text-white-50"><i class="fas fa-star text-warning"></i> Рейтинг: ${currentUser.rating}</p>
+                            <p class="text-white-50"><i class="fas fa-check-circle text-success"></i> Выполнено: ${currentUser.completed_tasks}</p>
+                            <p class="text-white-50"><i class="fas fa-user-tag"></i> ${currentUser.role === 'customer' ? 'Заказчик' : 'Исполнитель'}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="glass-card p-4">
+                            <h4 class="text-white mb-3">✏️ Редактировать профиль</h4>
+                            <form id="profileForm">
+                                <div class="mb-3"><label class="text-white">Имя</label><input type="text" id="profileName" class="form-control form-glass" value="${currentUser.name}"></div>
+                                <div class="mb-3"><label class="text-white">Телефон</label><input type="text" id="profilePhone" class="form-control form-glass" value="${currentUser.phone}"></div>
+                                <div class="mb-3"><label class="text-white">О себе</label><textarea id="profileBio" class="form-control form-glass" rows="3">${currentUser.bio || ''}</textarea></div>
+                                <button type="submit" class="btn btn-apple">Сохранить изменения</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.getElementById('mainContainer').innerHTML = html;
+        document.getElementById('profileForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await api('POST', '/api/profile/update', {
+                name: document.getElementById('profileName').value,
+                phone: document.getElementById('profilePhone').value,
+                bio: document.getElementById('profileBio').value
+            });
+            await loadUser();
+            alert('Профиль обновлён');
+        });
+    }
+
+    function renderCreateTask() {
+        document.getElementById('mainContainer').innerHTML = `
+            <div class="row justify-content-center">
+                <div class="col-md-7">
+                    <div class="glass-card p-5 fade-in">
+                        <h2 class="text-white text-center mb-4">📝 Создать заявку</h2>
+                        <form id="createTaskForm">
+                            <div class="mb-3"><label class="text-white">Что нужно сделать?</label><input type="text" id="taskTitle" class="form-control form-glass" required></div>
+                            <div class="mb-3"><label class="text-white">Описание</label><textarea id="taskDesc" class="form-control form-glass" rows="3" required></textarea></div>
+                            <div class="mb-3"><label class="text-white">Цена (тенге)</label><input type="number" id="taskPrice" class="form-control form-glass" required></div>
+                            <div class="mb-3"><label class="text-white">Адрес или район</label><input type="text" id="taskAddress" class="form-control form-glass" required></div>
+                            <button type="submit" class="btn btn-apple w-100">Опубликовать</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.getElementById('createTaskForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await api('POST', '/api/task/create', {
+                title: document.getElementById('taskTitle').value,
+                description: document.getElementById('taskDesc').value,
+                price: document.getElementById('taskPrice').value,
+                address: document.getElementById('taskAddress').value
+            });
+            alert('Заявка создана!');
+            showPage('dashboard');
+        });
+    }
+
+    window.viewTask = async (taskId) => {
+        window.currentTaskId = taskId;
+        const task = await api('GET', `/api/task/${taskId}`);
+        let responsesHtml = '';
+        for (let r of task.responses) {
+            responsesHtml += `
+                <div class="mb-3 p-2" style="background: rgba(255,255,255,0.1); border-radius: 12px;">
+                    <strong class="text-white">${r.executor_name}</strong>
+                    <div class="stars">${'⭐'.repeat(Math.floor(r.executor_rating))}</div>
+                    <p class="text-white-50 small">${r.message.substring(0, 100)}</p>
+                    ${currentUser && currentUser.id === task.customer_id && task.status === 'open' && r.status === 'pending' ? `<button class="btn btn-sm btn-apple" onclick="acceptResponse(${r.id})">Выбрать</button>` : ''}
+                    ${r.status === 'accepted' ? '<span class="badge bg-success">✅ Выбран</span>' : ''}
+                </div>
+            `;
+        }
+        
+        const html = `
+            <div class="fade-in">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="glass-card p-4">
+                            <h2 class="text-white">${task.title}</h2>
+                            <p class="text-white-50">${task.description}</p>
+                            <p class="text-white">💰 <strong>${task.price} тенге</strong></p>
+                            <p class="text-white">📍 ${task.address}</p>
+                            <p class="text-white-50">👤 Заказчик: ${task.customer_name}</p>
+                            <span class="badge bg-${task.status === 'open' ? 'success' : (task.status === 'in_progress' ? 'warning' : 'secondary')} fs-6">${task.status === 'open' ? '🟢 Ищет исполнителя' : (task.status === 'in_progress' ? '🟡 В работе' : '⚪ Завершена')}</span>
+                        </div>
+                        ${currentUser && task.executor_id && (currentUser.id === task.customer_id || currentUser.id === task.executor_id) ? `
+                        <div class="glass-card p-4 mt-3">
+                            <button class="btn btn-apple" onclick="alert('Чат в разработке')"><i class="fas fa-comment"></i> Написать сообщение</button>
+                            ${currentUser.id === task.customer_id && task.status === 'in_progress' ? `<button class="btn btn-outline-apple" onclick="completeTask(${task.id})"><i class="fas fa-check"></i> Подтвердить выполнение</button>` : ''}
+                        </div>
+                        ` : ''}
+                    </div>
+                    <div class="col-md-4">
+                        <div class="glass-card p-4">
+                            <h5 class="text-white">📢 Отклики (${task.responses.length})</h5>
+                            ${responsesHtml || '<p class="text-white-50">Пока нет откликов</p>'}
+                        </div>
+                    </div>
+                </div>
+                ${currentUser && currentUser.role === 'executor' && task.status === 'open' ? `
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <div class="glass-card p-4">
+                            <h5 class="text-white">💬 Откликнуться на заявку</h5>
+                            <textarea id="responseMessage" class="form-control form-glass mb-2" rows="2" placeholder="Расскажите, почему вы можете помочь..."></textarea>
+                            <button class="btn btn-apple" onclick="showCaptchaModal(${task.id})">Отправить отклик</button>
+                        </div>
+                    </div>
+                </div>
+                ` : ''}
+            </div>
+        `;
+        document.getElementById('mainContainer').innerHTML = html;
+    };
+
+    window.acceptResponse = async (responseId) => {
+        await api('GET', `/api/response/${responseId}/accept`);
+        alert('Исполнитель выбран');
+        viewTask(window.currentTaskId);
+    };
+
+    window.completeTask = async (taskId) => {
+        await api('GET', `/api/task/${taskId}/complete`);
+        alert('Заявка завершена');
+        viewTask(taskId);
+    };
+
+    window.showCaptchaModal = async (taskId) => {
+        pendingResponseTaskId = taskId;
+        const captchaData = await api('GET', '/api/captcha/generate');
+        currentCaptchaCode = captchaData.code;
+        const modalHtml = `
+            <div class="modal fade" id="captchaModal" tabindex="-1" data-bs-backdrop="static">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header border-0"><h5 class="modal-title">🤖 Подтверждение</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+                        <div class="modal-body text-center">
+                            <p>Введите код с картинки</p>
+                            <div class="digit-captcha mb-3">${currentCaptchaCode}</div>
+                            <input type="text" id="captchaInput" class="form-control text-center" placeholder="Введите код" style="background: rgba(255,255,255,0.1); color: white; width: 200px; margin: 0 auto;">
+                            <div class="mt-3"><button class="btn btn-secondary" onclick="refreshCaptcha()">🔄 Обновить</button><button class="btn btn-apple ms-2" onclick="verifyCaptchaAndRespond()">✅ Подтвердить</button></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+        const modal = new bootstrap.Modal(document.getElementById('captchaModal'));
+        modal.show();
+        document.getElementById('captchaModal').addEventListener('hidden.bs.modal', () => {
+            document.getElementById('captchaModal').remove();
+        });
+    };
+
+    window.refreshCaptcha = async () => {
+        const captchaData = await api('GET', '/api/captcha/generate');
+        currentCaptchaCode = captchaData.code;
+        document.querySelector('.digit-captcha').innerText = currentCaptchaCode;
+    };
+
+    window.verifyCaptchaAndRespond = async () => {
+        const userCode = document.getElementById('captchaInput').value;
+        if (userCode !== currentCaptchaCode) {
+            alert('Неверный код!');
+            return;
+        }
+        const message = document.getElementById('responseMessage').value;
+        await api('POST', `/api/task/${pendingResponseTaskId}/respond`, { message });
+        alert('Отклик отправлен!');
+        bootstrap.Modal.getInstance(document.getElementById('captchaModal')).hide();
+        viewTask(pendingResponseTaskId);
+    };
+
+    // Загрузка начального состояния
+    loadUser();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

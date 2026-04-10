@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}Личный кабинет{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="glass-card p-4 text-center">
+                <div class="avatar mx-auto mb-3" style="width: 100px; height: 100px; font-size: 2.5rem;">
+                    {{ user.name[0]|upper }}
+                </div>
+                <h3 class="text-white">{{ user.name }}</h3>
+                <p class="text-white-50">
+                    <i class="fas fa-star text-warning"></i> Рейтинг: {{ user.rating }}
+                </p>
+                <p class="text-white-50">
+                    <i class="fas fa-check-circle text-success"></i> Выполнено: {{ user.completed_tasks }}
+                </p>
+                <p class="text-white-50">
+                    <i class="fas fa-user-tag"></i> 
+                    {% if user.role == 'customer' %}Заказчик{% else %}Исполнитель{% endif %}
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="glass-card p-4">
+                <h4 class="text-white mb-3">✏️ Редактировать профиль</h4>
+                <form method="POST">
+                    <div class="mb-3">
+                        <label class="text-white">Имя</label>
+                        <input type="text" name="name" class="form-control" value="{{ user.name }}" style="background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.3);">
+                    </div>
+                    <div class="mb-3">
+                        <label class="text-white">Телефон</label>
+                        <input type="text" name="phone" class="form-control" value="{{ user.phone }}" style="background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.3);">
+                    </div>
+                    <div class="mb-3">
+                        <label class="text-white">О себе</label>
+                        <textarea name="bio" class="form-control" rows="3" style="background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.3);">{{ user.bio }}</textarea>
+                    </div>
+                    <button type="submit" class="btn btn-apple">Сохранить изменения</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="glass-card p-4">
+                <h4 class="text-white mb-3">📦 Мои заказы (как заказчик)</h4>
+                {% for task in my_tasks_as_customer %}
+                    <div class="mb-2 p-2" style="background: rgba(255,255,255,0.1); border-radius: 12px;">
+                        <strong class="text-white">{{ task.title }}</strong>
+                        <span class="badge bg-{% if task.status == 'open' %}success{% elif task.status == 'in_progress' %}warning{% else %}secondary{% endif %} float-end">
+                            {{ task.status }}
+                        </span>
+                        <p class="text-white-50 small mb-0">{{ task.price }} ₸</p>
+                    </div>
+                {% else %}
+                    <p class="text-white-50">Нет заказов</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="glass-card p-4">
+                <h4 class="text-white mb-3">✅ Мои заказы (как исполнитель)</h4>
+                {% for task in my_tasks_as_executor %}
+                    <div class="mb-2 p-2" style="background: rgba(255,255,255,0.1); border-radius: 12px;">
+                        <strong class="text-white">{{ task.title }}</strong>
+                        <span class="badge bg-{% if task.status == 'open' %}success{% elif task.status == 'in_progress' %}warning{% else %}secondary{% endif %} float-end">
+                            {{ task.status }}
+                        </span>
+                        <p class="text-white-50 small mb-0">{{ task.price }} ₸</p>
+                    </div>
+                {% else %}
+                    <p class="text-white-50">Нет заказов</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

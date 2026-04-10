@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-5">
+        <div class="glass-card p-5 fade-in">
+            <h2 class="text-white text-center mb-4">Вход</h2>
+            <form method="POST">
+                <div class="mb-3">
+                    <label class="text-white">ИИН</label>
+                    <input type="text" name="iin" class="form-control" required style="background: rgba(255,255,255,0.1); color: white;">
+                </div>
+                <div class="mb-3">
+                    <label class="text-white">Пароль</label>
+                    <input type="password" name="password" class="form-control" required style="background: rgba(255,255,255,0.1); color: white;">
+                </div>
+                <button type="submit" class="btn btn-apple w-100">Войти</button>
+            </form>
+            <p class="text-center text-white-50 mt-3">Нет аккаунта? <a href="/register" class="text-white">Регистрация</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}
